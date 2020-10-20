@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SodaMachine", "SodaMachine\SodaMachine.csproj", "{2455C013-C66F-40EE-825F-D71083C0F9B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2455C013-C66F-40EE-825F-D71083C0F9B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2455C013-C66F-40EE-825F-D71083C0F9B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2455C013-C66F-40EE-825F-D71083C0F9B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2455C013-C66F-40EE-825F-D71083C0F9B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BEBFFC4A-DD0C-46B6-BE03-15D3AC1A0F6E}
+	EndGlobalSection
+EndGlobal
