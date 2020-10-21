@@ -8,5 +8,10 @@ namespace SodaMachine
 {
     class Cola : Can
     {
+        public Cola(double value)
+            :base("Coke", value)
+        {
+
+        }
     }
 }

@@ -23,5 +23,10 @@ namespace SodaMachine
 
         public string name;
 
+        public Can(string name, double value)
+        {
+            this.name = name;
+            this.value = value;
+        }
     }
 }

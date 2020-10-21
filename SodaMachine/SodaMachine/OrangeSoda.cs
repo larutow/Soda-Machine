@@ -8,5 +8,10 @@ namespace SodaMachine
 {
     class OrangeSoda : Can
     {
+        public OrangeSoda(double value)
+            : base("Fanta", value)
+        {
+
+        }
     }
 }

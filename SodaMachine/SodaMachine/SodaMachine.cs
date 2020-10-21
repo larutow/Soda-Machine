@@ -15,6 +15,8 @@ namespace SodaMachine
 
         public SodaMachine()
         {
+            register = new List<Coin>();
+            inventory = new List<Can>();
             PopulateRegister();
             PopulateInventory();
         }
@@ -42,9 +44,9 @@ namespace SodaMachine
         {
             for(int i = 0; i < 10; i++)
             {
-                inventory.Add(new Cola());
-                inventory.Add(new OrangeSoda());
-                inventory.Add(new RootBeer());
+                inventory.Add(new Cola(0.35));
+                inventory.Add(new OrangeSoda(0.06));
+                inventory.Add(new RootBeer(0.60));
             }
         }
 
