@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -17,7 +18,7 @@ namespace SodaMachine
 
         }
 
-        public void UseMachine(List<Coin> moneyIn, Can desiredSoda)
+        public List<Coin> UseMachine(List<Coin> moneyIn, Can desiredSoda, Backpack userBackpack)
         {
 
             /*
@@ -28,30 +29,166 @@ namespace SodaMachine
              * If exact or too much money is passed in but there isn’t sufficient inventory for that soda, don’t complete the transaction: give the money back.
              */
 
-            //sum money in
-            double sumInput = 0;
+            
+            double sumInputValue = 0;
+            double registerChangeValue = 0;
+            double calculatedChangeValue;
+            List<Coin> returnChange = new List<Coin>();
+
+            //sum money input
+            //sumInputValue = CalcSum(moneyIn); // add to register?
             foreach (Coin coin in moneyIn)
             {
-                sumInput += coin.Value;
+                sumInputValue += coin.Value;
+                register.Add(coin);
+            }
+
+            //sum money in register
+            registerChangeValue = CalcSum(register);
+            foreach(Coin coin in register)
+            {
+                registerChangeValue += coin.Value;
             }
             //display to UI
 
+
+
             //If not enough money is passed in, don’t complete transaction and give the money back
-            if (sumInput < desiredSoda.Value)
+            if (sumInputValue < desiredSoda.Value)
             {
                 // return change, don't complete tx
+                returnChange = moneyIn;
+                
             }
 
-            if (sumInput >= desiredSoda.Value && inventory.Contains(desiredSoda)){
+            // * If exact change is passed in, accept payment and dispense a soda instance that gets saved in my Backpack.
+            if (sumInputValue == desiredSoda.Value && inventory.Contains(desiredSoda))
+            {
                 //give soda to customer
                 //remove soda from inventory
-                //return change if not there
+                userBackpack.cans.Add(desiredSoda);
+                inventory.Remove(desiredSoda);
+            }
+            else //*If too much money is passed in, accept the payment, return change as a list of coins from internal, limited register, and dispense a soda instance that gets saved to my Backpack.
+            if (sumInputValue > desiredSoda.Value && inventory.Contains(desiredSoda))
+            {
+                //check internal register
+                
+                calculatedChangeValue = sumInputValue - desiredSoda.Value;
+                foreach (Coin coin in register)
+                {
+                    registerChangeValue += coin.Value;
+                }
+
+                if (calculatedChangeValue > registerChangeValue)
+                {
+                    //not enough change, give money back
+                    returnChange = moneyIn;
+                }
+
+                ChangeAlgo(calculatedChangeValue, out returnChange);
+                
+            }
+            return returnChange;
+        }
+
+
+        // change will exist
+        // change is diff of input & soda cost
+        // register can either
+        // 1 not have enough (total val register < total change (coinlist) needed OR register has enough value BUT not enough individual coins to give accurate change, give back input money)
+        // 2 have just enough coins to give change (total val register == total change needed, give out entire register)
+        // 3 have more than enough coins to give change
+        // building a coin list algorithmically
+        // for each coin in the list
+        public double CalcSum(List<Coin> coins)
+        {
+            double sum = 0;
+            foreach(Coin coin in coins)
+            {
+                sum += coin.Value;
+            }
+
+            return sum;
+        }
+
+        private bool ChangeAlgo(double targetChangeValue, out List<Coin> returnChange)
+        {
+            bool makeChange = false;
+            returnChange = new List<Coin>();
+            double returnChangeValue = 0;
+            
+            //List<Coin> returnChange = new List<Coin>;
+            
+            foreach(Quarter quarter in register)
+            {
+               if((targetChangeValue - returnChangeValue) >= 0.25)
+               {
+                    returnChange.Add(quarter);
+                    returnChangeValue = CalcSum(returnChange);
+               }
+               
+               if (returnChangeValue == targetChangeValue)
+               {
+                    makeChange = true;
+                    break;
+               }
+            }
+
+            foreach(Dime dime in register)
+            {
+                returnChange.Add(dime);
+                if((targetChangeValue - returnChangeValue)>= 0.10)
+                {
+                    returnChange.Add(dime);
+                    returnChangeValue = CalcSum(returnChange);
+                    
+                }
+                if (returnChangeValue == targetChangeValue)
+                {
+                    makeChange = true;
+                    break;
+                }
+                
+            }
+
+            foreach (Nickel nickel in register)
+            {
+                returnChange.Add(nickel);
+                if ((targetChangeValue - returnChangeValue) >= 0.05)
+                {
+                    returnChange.Add(nickel);
+                    returnChangeValue = CalcSum(returnChange);
+                    
+                }
+                if (returnChangeValue == targetChangeValue)
+                {
+                    makeChange = true;
+                    break;
+                }
+
+            }
+
+            foreach (Penny penny in register)
+            {
+                returnChange.Add(penny);
+                if ((targetChangeValue - returnChangeValue) >= 0.01)
+                {
+                    returnChange.Add(penny);
+                    returnChangeValue = CalcSum(returnChange);
+                    
+                }
+                if (returnChangeValue == targetChangeValue)
+
+                {
+                    makeChange = true;
+                    break;
+                }
+
             }
 
 
-
-
-
+            return makeChange;
         }
 
         private Can distributeCan()

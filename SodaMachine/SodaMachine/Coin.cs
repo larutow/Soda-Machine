@@ -18,5 +18,10 @@ namespace SodaMachine
 
         protected double value;
         public string name;
+
+        public Coin()
+        {
+
+        }
     }
 }
