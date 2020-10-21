@@ -145,83 +145,38 @@ namespace SodaMachine
             
             //change algorithm
             //tries w/ biggest coins to meet change requirement
-            //refactor idea: make generalizeable (type & value
+            //refactor idea: make generalizeable (type & value)
             bool makeChange = false;
             returnChange = new List<Coin>();
             double returnChangeValue = 0;
             
+
+            //Use USD greedy method to build ideal change list 
+
             //List<Coin> returnChange = new List<Coin>;
             
-            foreach(Quarter quarter in register)
-            {
-               if((targetChangeValue - returnChangeValue) >= quarter.Value)
-               {
-                    returnChange.Add(quarter);
-                    returnChangeValue = CalcSum(returnChange);
-               }
-               
-               if (returnChangeValue == targetChangeValue)
-               {
-                    makeChange = true;
-                    break;
-               }
-            }
 
-            foreach(Dime dime in register)
+            foreach(Coin coin in register)
             {
-                returnChange.Add(dime);
-                if((targetChangeValue - returnChangeValue)>= 0.10)
-                {
-                    returnChange.Add(dime);
-                    returnChangeValue = CalcSum(returnChange);
-                    
-                }
-                if (returnChangeValue == targetChangeValue)
-                {
-                    makeChange = true;
-                    break;
-                }
                 
-            }
-
-            foreach (Nickel nickel in register)
-            {
-                returnChange.Add(nickel);
-                if ((targetChangeValue - returnChangeValue) >= 0.05)
+                
+                if (targetChangeValue - returnChangeValue >= coin.Value)
                 {
-                    returnChange.Add(nickel);
+                    returnChange.Add(coin);
                     returnChangeValue = CalcSum(returnChange);
-                    
                 }
+
                 if (returnChangeValue == targetChangeValue)
                 {
                     makeChange = true;
                     break;
                 }
-
             }
 
-            foreach (Penny penny in register)
-            {
-                returnChange.Add(penny);
-                if ((targetChangeValue - returnChangeValue) >= 0.01)
-                {
-                    returnChange.Add(penny);
-                    returnChangeValue = CalcSum(returnChange);
-                    
-                }
-                if (returnChangeValue == targetChangeValue)
-
-                {
-                    makeChange = true;
-                    break;
-                }
-
-            }
 
             if (makeChange)
             {
-                foreach(Coin coin in returnChange)
+                foreach (Coin coin in returnChange)
                 {
                     register.Remove(coin);
                 }
@@ -232,6 +187,72 @@ namespace SodaMachine
             }
 
             return makeChange;
+
+            //foreach(Quarter quarter in register)
+            //{
+            //   if((targetChangeValue - returnChangeValue) >= quarter.Value)
+            //   {
+            //        returnChange.Add(quarter);
+            //        returnChangeValue = CalcSum(returnChange);
+            //   }
+
+            //   if (returnChangeValue == targetChangeValue)
+            //   {
+            //        makeChange = true;
+            //        break;
+            //   }
+            //}
+
+            //foreach(Dime dime in register)
+            //{
+            //    returnChange.Add(dime);
+            //    if((targetChangeValue - returnChangeValue)>= 0.10)
+            //    {
+            //        returnChange.Add(dime);
+            //        returnChangeValue = CalcSum(returnChange);
+
+            //    }
+            //    if (returnChangeValue == targetChangeValue)
+            //    {
+            //        makeChange = true;
+            //        break;
+            //    }
+
+            //}
+
+            //foreach (Nickel nickel in register)
+            //{
+            //    returnChange.Add(nickel);
+            //    if ((targetChangeValue - returnChangeValue) >= 0.05)
+            //    {
+            //        returnChange.Add(nickel);
+            //        returnChangeValue = CalcSum(returnChange);
+
+            //    }
+            //    if (returnChangeValue == targetChangeValue)
+            //    {
+            //        makeChange = true;
+            //        break;
+            //    }
+
+            //}
+
+            //foreach (Penny penny in register)
+            //{
+            //    returnChange.Add(penny);
+            //    if ((targetChangeValue - returnChangeValue) >= 0.01)
+            //    {
+            //        returnChange.Add(penny);
+            //        returnChangeValue = CalcSum(returnChange);
+
+            //    }
+            //    if (returnChangeValue == targetChangeValue)
+
+            //    {
+            //        makeChange = true;
+            //        break;
+            //    }
+
         }
 
         private Can distributeCan()

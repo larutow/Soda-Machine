@@ -10,6 +10,8 @@ namespace SodaMachine
     {
         static void Main(string[] args)
         {
+            Simulation sim = new Simulation();
+            sim.PerformTransaction();
         }
     }
 }

@@ -11,5 +11,19 @@ namespace SodaMachine
     {
         public SodaMachine sodaMachine;
         public Customer customer;
+
+        public Simulation()
+        {
+            customer = new Customer();
+            sodaMachine = new SodaMachine();
+        }
+
+        public void PerformTransaction()
+        {
+            //test
+            sodaMachine.UseMachine(customer.wallet.coins, sodaMachine.inventory[0], customer.backpack);
+
+            Console.ReadLine();
+        }
     }
 }
