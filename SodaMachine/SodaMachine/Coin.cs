@@ -21,7 +21,8 @@ namespace SodaMachine
 
         public Coin()
         {
-
+            
+            
         }
     }
 }
