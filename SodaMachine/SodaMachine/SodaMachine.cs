@@ -63,7 +63,6 @@ namespace SodaMachine
 
             
             double sumInputValue = 0;
-            double registerChangeValue = 0;
             double calculatedChangeValue;
             List<Coin> returnChange = new List<Coin>();
 
@@ -74,9 +73,10 @@ namespace SodaMachine
                 sumInputValue += coin.Value;
                 register.Add(coin);
             }
+            sumInputValue = Math.Round(sumInputValue, 2);
 
             //sum money in register
-            registerChangeValue = CalcSum(register);
+            double registerChangeValue = Math.Round(CalcSum(register),2);
             
             //display to UI
 
@@ -101,7 +101,7 @@ namespace SodaMachine
             if (sumInputValue > desiredSoda.Value && inventory.Contains(desiredSoda))
             {
                 //check internal register
-                calculatedChangeValue = sumInputValue - desiredSoda.Value;
+                calculatedChangeValue = Math.Round((sumInputValue - desiredSoda.Value),2);
                 if(ChangeAlgo(calculatedChangeValue, out List<Coin> tryReturnChange))
                 {
                     return tryReturnChange;
@@ -147,46 +147,101 @@ namespace SodaMachine
             //tries w/ biggest coins to meet change requirement
             //refactor idea: make generalizeable (type & value)
             bool makeChange = false;
+            List<Coin> targetChange = new List<Coin>();
+            double idealTargetChangeSum = 0;
             returnChange = new List<Coin>();
             double returnChangeValue = 0;
-            
 
-            //Use USD greedy method to build ideal change list 
 
-            //List<Coin> returnChange = new List<Coin>;
-            
 
-            foreach(Coin coin in register)
+
+            //Use USD greedy method (first quarters, then dimes etc.) to build ideal change list 
+            do
             {
-                
-                
-                if (targetChangeValue - returnChangeValue >= coin.Value)
+                if (targetChangeValue - idealTargetChangeSum >= 0.25)
                 {
-                    returnChange.Add(coin);
-                    returnChangeValue = CalcSum(returnChange);
+                    targetChange.Add(new Quarter());
+                    idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.25, 2);
+                }
+                else 
+                if ( targetChangeValue - idealTargetChangeSum >= 0.1)
+                {
+                    targetChange.Add(new Dime());
+                    idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.1, 2);
+                }
+                else
+                if (targetChangeValue - idealTargetChangeSum >= 0.05)
+                {
+                    targetChange.Add(new Nickel());
+                    idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.05, 2);
+                }
+                else
+                if (targetChangeValue - idealTargetChangeSum >= 0.01)
+                {
+                    targetChange.Add(new Penny());
+                    idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.01, 2);
                 }
 
-                if (returnChangeValue == targetChangeValue)
+            } while (idealTargetChangeSum < targetChangeValue);
+            // above generates "targetChange" as a set of coins needed to return change
+            // if reigster contains all target change set = set bool = true, target change = return change
+            // else, n/a
+
+
+            int count = targetChange.Count;
+            for (int i = 0; i < count; i++)
+            {
+                foreach (Coin coin in register)
                 {
-                    makeChange = true;
-                    break;
+                    if (targetChange[i].Value == coin.Value)
+                    {
+                        returnChange.Add(coin); //ideal coin found in register, add it to return change list
+                        register.Remove(coin); //remove coin from register
+                        break;
+                    }
+                    
                 }
             }
 
+            if (targetChange.Count == returnChange.Count) //if all coins are found to satisfy ideal coin case
+            {
+                makeChange = true; 
+            }
 
             if (makeChange)
             {
+                Console.WriteLine("return change successfully obtained");
+            }
+            else//if change couldn't be made
+            {
                 foreach (Coin coin in returnChange)
                 {
-                    register.Remove(coin);
+                    register.Add(coin);//return coins from change return to register
                 }
-            }
-            else
-            {
-                returnChange.Clear();
+                returnChange.Clear();//clear change return
             }
 
             return makeChange;
+
+            //foreach (Coin coin in register)
+            //{
+                
+            //    foreach (Coin coinTarget in targetChange)
+            //    {
+            //        if (coin.Value == coinTarget.Value)
+            //        {
+            //            returnChange.Add(coinTarget);
+            //            targetChange.Remove(coinTarget);
+            //            break;
+            //        }
+            //    }
+
+            //    if(targetChange.Count == 0)
+            //    {
+            //        makeChange = true;
+            //    }
+ 
+            //}
 
             //foreach(Quarter quarter in register)
             //{
