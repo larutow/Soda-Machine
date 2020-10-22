@@ -1,10 +1,5 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SodaMachine
 {
@@ -29,7 +24,7 @@ namespace SodaMachine
                 register.Add(new Nickel());
             }
 
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 register.Add(new Dime());
             }
@@ -42,7 +37,7 @@ namespace SodaMachine
 
         private void PopulateInventory()
         {
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 inventory.Add(new Cola(0.35));
                 inventory.Add(new OrangeSoda(0.06));
@@ -61,11 +56,13 @@ namespace SodaMachine
              * If exact or too much money is passed in but there isn’t sufficient inventory for that soda, don’t complete the transaction: give the money back.
              */
 
-            
+
             double sumInputValue = 0;
             double calculatedChangeValue;
             List<Coin> returnChange = new List<Coin>();
-
+            UserInterface.MainDisplay();
+            
+            Can desiredSoda = 
             //sum money input
             //sumInputValue = CalcSum(moneyIn); // add to register?
             foreach (Coin coin in moneyIn)
@@ -76,8 +73,8 @@ namespace SodaMachine
             sumInputValue = Math.Round(sumInputValue, 2);
 
             //sum money in register
-            double registerChangeValue = Math.Round(CalcSum(register),2);
-            
+            double registerChangeValue = Math.Round(CalcSum(register), 2);
+
             //display to UI
 
             //If not enough money is passed in, don’t complete transaction and give the money back
@@ -85,7 +82,7 @@ namespace SodaMachine
             {
                 // return change, don't complete tx
                 returnChange = moneyIn;
-                
+
             }
 
             // * If exact change is passed in, accept payment and dispense a soda instance that gets saved in my Backpack.
@@ -96,13 +93,13 @@ namespace SodaMachine
                 userBackpack.cans.Add(desiredSoda);
                 inventory.Remove(desiredSoda);
             }
-            else 
+            else
             //*If too much money is passed in, accept the payment, return change as a list of coins from internal, limited register, and dispense a soda instance that gets saved to my Backpack.
             if (sumInputValue > desiredSoda.Value && inventory.Contains(desiredSoda))
             {
                 //check internal register
-                calculatedChangeValue = Math.Round((sumInputValue - desiredSoda.Value),2);
-                if(ChangeAlgo(calculatedChangeValue, out List<Coin> tryReturnChange))
+                calculatedChangeValue = Math.Round((sumInputValue - desiredSoda.Value), 2);
+                if (ChangeAlgo(calculatedChangeValue, out List<Coin> tryReturnChange))
                 {
                     return tryReturnChange;
                 }
@@ -114,7 +111,7 @@ namespace SodaMachine
                 }
 
                 ChangeAlgo(calculatedChangeValue, out returnChange);
-                
+
             }
 
             return returnChange;
@@ -124,15 +121,15 @@ namespace SodaMachine
         // change will exist
         // change is diff of input & soda cost
         // register can either
-            // 1 not have enough (total val register < total change (coinlist) needed OR register has enough value BUT not enough individual coins to give accurate change, give back input money)
-            // 2 have just enough coins to give change (total val register == total change needed, give out entire register)
-            // 3 have more than enough coins to give change
+        // 1 not have enough (total val register < total change (coinlist) needed OR register has enough value BUT not enough individual coins to give accurate change, give back input money)
+        // 2 have just enough coins to give change (total val register == total change needed, give out entire register)
+        // 3 have more than enough coins to give change
         // building a coin list algorithmically
         // for each coin in the list
         public double CalcSum(List<Coin> coins)
         {
             double sum = 0;
-            foreach(Coin coin in coins)
+            foreach (Coin coin in coins)
             {
                 sum += coin.Value;
             }
@@ -142,7 +139,7 @@ namespace SodaMachine
 
         private bool ChangeAlgo(double targetChangeValue, out List<Coin> returnChange)
         {
-            
+
             //change algorithm
             //tries w/ biggest coins to meet change requirement
             //refactor idea: make generalizeable (type & value)
@@ -163,8 +160,8 @@ namespace SodaMachine
                     targetChange.Add(new Quarter());
                     idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.25, 2);
                 }
-                else 
-                if ( targetChangeValue - idealTargetChangeSum >= 0.1)
+                else
+                if (targetChangeValue - idealTargetChangeSum >= 0.1)
                 {
                     targetChange.Add(new Dime());
                     idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.1, 2);
@@ -199,18 +196,18 @@ namespace SodaMachine
                         register.Remove(coin); //remove coin from register
                         break;
                     }
-                    
+
                 }
             }
 
             if (targetChange.Count == returnChange.Count) //if all coins are found to satisfy ideal coin case
             {
-                makeChange = true; 
+                makeChange = true;
             }
 
             if (makeChange)
             {
-                Console.WriteLine("return change successfully obtained");
+                Console.WriteLine("return change successfully obtained from register");
             }
             else//if change couldn't be made
             {
@@ -225,7 +222,7 @@ namespace SodaMachine
 
             //foreach (Coin coin in register)
             //{
-                
+
             //    foreach (Coin coinTarget in targetChange)
             //    {
             //        if (coin.Value == coinTarget.Value)
@@ -240,7 +237,7 @@ namespace SodaMachine
             //    {
             //        makeChange = true;
             //    }
- 
+
             //}
 
             //foreach(Quarter quarter in register)

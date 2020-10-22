@@ -18,12 +18,50 @@ namespace SodaMachine
             sodaMachine = new SodaMachine();
         }
 
-        public void PerformTransaction()
+        public void RunInstance()
         {
             //test
-            sodaMachine.UseMachine(customer.wallet.coins, sodaMachine.inventory[0], customer.backpack);
+            //You approach a vending machine
+            //[ Vending Machine Display ]
+            //User Actions
+            // insert coins
+            // purchase drink
+            // return coins
+            // Quit/walk away
+            List<Coin> coinsEntered = new List<Coin>();
+            
+            do
+            {
+                UserInterface.VendingDisplay(sodaMachine, coinsEntered);
+                
+                switch (UserInterface.UserMenu())
+                {
+                    case 1:
+                        UserInterface.CoinSelectScreen();
+                        coinsEntered = customer.SelectCoins();
+                        
+                        break;
+                    case 2:
+                        UserInterface.DrinkPurchaseScreen();
+                        Can desiredItem = customer.SelectDrink(sodaMachine);
+                        sodaMachine.UseMachine(coinsEntered, desiredItem, customer.backpack);
 
-            Console.ReadLine();
+                }
+                
+
+                
+
+
+
+                sodaMachine.UseMachine(coinsEntered, sodaMachine.inventory[0], customer.backpack);
+
+                Console.ReadLine();
+            }
+        }
+
+        public void UserMenu()
+        {
+
         }
     }
 }

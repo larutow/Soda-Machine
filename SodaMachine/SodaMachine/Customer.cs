@@ -16,5 +16,14 @@ namespace SodaMachine
             wallet = new Wallet();
             backpack = new Backpack();
         }
+
+        public List<Coin> SelectCoins()
+        {
+            List<Coin> selectedCoins = new List<Coin>();
+            
+
+            return selectedCoins;
+        }
+        
     }
 }
