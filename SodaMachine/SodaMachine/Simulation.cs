@@ -29,36 +29,32 @@ namespace SodaMachine
             // return coins
             // Quit/walk away
             List<Coin> coinsEntered = new List<Coin>();
-            List<Coin> changeReturn = new List<Coin>();
+            List<Coin> changeReturn;
+            bool stayatmachine = true;
             do
             {
+                Console.Clear();
                 UserInterface.VendingDisplay(sodaMachine, coinsEntered);
-                
+
                 switch (UserInterface.UserMenu())
                 {
                     case 1:
-                        coinsEntered = UserInterface.CoinSelectScreen(customer.wallet.coins);
+                        coinsEntered = UserInterface.CoinSelectScreen(customer.wallet.coins, coinsEntered);
                         break;
                     case 2:
                         Can desiredItem = UserInterface.DrinkPurchaseScreen(customer, sodaMachine);
                         changeReturn = sodaMachine.UseMachine(coinsEntered, desiredItem, customer.backpack);
                         break;
+                    case 3:
+
+                        break;
+                    case 4:
+                        stayatmachine = false;
+                        break;
                 }
-                
-
-                
 
 
-
-                sodaMachine.UseMachine(coinsEntered, sodaMachine.inventory[0], customer.backpack);
-
-                Console.ReadLine();
-            }
-        }
-
-        public void UserMenu()
-        {
-
+            } while (stayatmachine);
         }
     }
 }

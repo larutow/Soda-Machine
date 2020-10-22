@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,43 +14,89 @@ namespace SodaMachine
         public static void VendingDisplay(SodaMachine sodaMachine, List<Coin> coinsEntered)
         {
             Console.WriteLine("Vending machine has the following options:");
-            Console.WriteLine($"1. Cola \n2. Orange Soda \n3. Rootbeer");
-            Console.WriteLine($"Money entered to machine: {sodaMachine.CalcSum(coinsEntered)}");
+            Console.WriteLine($"Cola - Orange Soda - Rootbeer");
+            Console.WriteLine($"\nMoney entered to machine: {Math.Round(sodaMachine.CalcSum(coinsEntered),2)}");
 
         }
 
         public static int UserMenu()
         {
-            Console.WriteLine("User Options:");
+            Console.WriteLine("\nUser Options:");
             Console.WriteLine("1. Insert coins");
             Console.WriteLine("2. Choose a soda option");
             Console.WriteLine("3. Quit");
             return IntValidEntry(3);
         }
 
-        public static List<Coin> CoinSelectScreen(List<Coin> coins)
+        public static List<Coin> CoinSelectScreen(List<Coin> usersCoins, List<Coin> coinsInMachine)
         {
-            List<Coin> selectedCoins = new List<Coin>();
-            List<int> changeCount = DisplayCoins(coins);
-            Console.WriteLine("Please enter how many coins you'd like to insert in the following format:\n quarters dimes nickels pennies with 1 space in between each val\n Example: 0 1 1 12 would be 0 quarters, 1 dime, 1 nickel, and 12 pennies");
-            Console.WriteLine("Q  D  N  P");
-            selectedCoins = EnterQtyCoins(changeCount);
+            List<Coin> selectedCoins;
+            List<int> changeCount = DisplayCoins(usersCoins);
+            Console.WriteLine("Please enter how many coins you'd like to insert.\nWe'll ask you for quarters, nickels, dimes, and pennies - in that order.");
+            selectedCoins = EnterQtyCoins(usersCoins, changeCount);
+            coinsInMachine = AddCoins(selectedCoins, coinsInMachine);
+            return coinsInMachine;
         }
 
-        public static List<Coin> EnterQtyCoins(List<int> coinsAvailable)
+        private static List<Coin> AddCoins(List<Coin> selectedCoins, List<Coin> coinsInMachine)
+        {
+            foreach(Coin coin in selectedCoins)
+            {
+                coinsInMachine.Add(coin);
+            }
+            return coinsInMachine;
+        }
+
+        private static List<Coin> EnterQtyCoins(List<Coin> usersCoins, List<int> coinsAvailable)
         {
             List<Coin> desiredCoins = new List<Coin>();
-            string userentry = Console.ReadLine();
+            int[] numberOfEachToInsert = { 0, 0, 0, 0 };
+            List<string> coinNames = new List<string> { "quarters", "dimes", "nickels", "pennies" };
+            bool parseSuccess = false;
 
-            //Try to format Q D N P
-            foreach(Char c in userentry)
+            for (int i = 0; i < coinNames.Count; i++)
             {
-
+                Console.WriteLine($"Enter # of {coinNames[i]} - you have {coinsAvailable[i]} available in your wallet");
+                parseSuccess = false;
+                do
+                {
+                    parseSuccess = int.TryParse(Console.ReadLine(), out numberOfEachToInsert[i]);
+                    if (!parseSuccess)
+                    {
+                        Console.WriteLine("Please enter a valid integer value");
+                    }
+                    if (numberOfEachToInsert[i] > coinsAvailable[i] || numberOfEachToInsert[i] < 0)
+                    {
+                        Console.WriteLine($"Please enter a number between 0 and {coinsAvailable[i]}");
+                    }
+                } while (!parseSuccess || numberOfEachToInsert[i] < 0 || numberOfEachToInsert[i] > coinsAvailable[i]);
             }
 
+            for(int i = 0; i < numberOfEachToInsert[0]; i++)
+            {
+                desiredCoins.Add(new Quarter());
+                usersCoins.Remove(usersCoins.Find(x => x.name == "quarter"));
+            }
+            for (int i = 0; i < numberOfEachToInsert[1]; i++)
+            {
+                desiredCoins.Add(new Dime());
+                usersCoins.Remove(usersCoins.Find(x => x.name == "dime"));
+            }
+            for (int i = 0; i < numberOfEachToInsert[2]; i++)
+            {
+                desiredCoins.Add(new Nickel());
+                usersCoins.Remove(usersCoins.Find(x => x.name == "nickel"));
+            }
+            for (int i = 0; i < numberOfEachToInsert[3]; i++)
+            {
+                desiredCoins.Add(new Penny());
+                usersCoins.Remove(usersCoins.Find(x => x.name == "penny"));
+            }
+
+            return desiredCoins;
         }
 
-        public static List<int> DisplayCoins(List<Coin> coins)
+        private static List<int> DisplayCoins(List<Coin> coins)
         {
             int quarterCount = 0;
             int dimeCount = 0;
@@ -76,14 +123,16 @@ namespace SodaMachine
                 }
 
             }
-            Console.WriteLine("You have the following coins:");
+            Console.WriteLine("You have the following coins in your wallet:");
             Console.WriteLine($"{changeCount[0]} quarters, {changeCount[1]} dimes, {changeCount[2]} nickels, and {changeCount[3]} pennies");
             return changeCount;
         }
 
-        public static void DrinkPurchaseScreen(Customer customer, SodaMachine sodaMachine)
+        public static Can DrinkPurchaseScreen(Customer customer, SodaMachine sodaMachine)
         {
+            Can desiredDrink = new Cola(0.35);
 
+            return desiredDrink;
         }
 
         private static Can PickSoda()

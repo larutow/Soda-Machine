@@ -10,7 +10,7 @@ namespace SodaMachine
     {
         public Nickel()
         {
-            name = "quarter";
+            name = "nickel";
             value = 0.05;
         }
     }

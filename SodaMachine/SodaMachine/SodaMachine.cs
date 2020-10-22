@@ -60,9 +60,7 @@ namespace SodaMachine
             double sumInputValue = 0;
             double calculatedChangeValue;
             List<Coin> returnChange = new List<Coin>();
-            UserInterface.MainDisplay();
-            
-            Can desiredSoda = 
+
             //sum money input
             //sumInputValue = CalcSum(moneyIn); // add to register?
             foreach (Coin coin in moneyIn)
@@ -72,9 +70,7 @@ namespace SodaMachine
             }
             sumInputValue = Math.Round(sumInputValue, 2);
 
-            //sum money in register
-            double registerChangeValue = Math.Round(CalcSum(register), 2);
-
+            
             //display to UI
 
             //If not enough money is passed in, don’t complete transaction and give the money back
@@ -95,9 +91,11 @@ namespace SodaMachine
             }
             else
             //*If too much money is passed in, accept the payment, return change as a list of coins from internal, limited register, and dispense a soda instance that gets saved to my Backpack.
-            if (sumInputValue > desiredSoda.Value && inventory.Contains(desiredSoda))
+            if (sumInputValue > desiredSoda.Value && desiredSoda.GetType().Equals(inventory[0].GetType()));
             {
                 //check internal register
+                //sum money in register
+                double registerChangeValue = Math.Round(CalcSum(register), 2);
                 calculatedChangeValue = Math.Round((sumInputValue - desiredSoda.Value), 2);
                 if (ChangeAlgo(calculatedChangeValue, out List<Coin> tryReturnChange))
                 {
@@ -117,15 +115,6 @@ namespace SodaMachine
             return returnChange;
         }
 
-
-        // change will exist
-        // change is diff of input & soda cost
-        // register can either
-        // 1 not have enough (total val register < total change (coinlist) needed OR register has enough value BUT not enough individual coins to give accurate change, give back input money)
-        // 2 have just enough coins to give change (total val register == total change needed, give out entire register)
-        // 3 have more than enough coins to give change
-        // building a coin list algorithmically
-        // for each coin in the list
         public double CalcSum(List<Coin> coins)
         {
             double sum = 0;
@@ -140,9 +129,6 @@ namespace SodaMachine
         private bool ChangeAlgo(double targetChangeValue, out List<Coin> returnChange)
         {
 
-            //change algorithm
-            //tries w/ biggest coins to meet change requirement
-            //refactor idea: make generalizeable (type & value)
             bool makeChange = false;
             List<Coin> targetChange = new List<Coin>();
             double idealTargetChangeSum = 0;
