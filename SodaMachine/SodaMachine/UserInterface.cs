@@ -28,26 +28,23 @@ namespace SodaMachine
             return IntValidEntry(3);
         }
 
-        public static List<Coin> CoinSelectScreen(List<Coin> usersCoins, List<Coin> coinsInMachine)
+        public static void CoinSelectScreen()
         {
-            List<Coin> selectedCoins;
-            List<int> changeCount = DisplayCoins(usersCoins);
             Console.WriteLine("Please enter how many coins you'd like to insert.\nWe'll ask you for quarters, nickels, dimes, and pennies - in that order.");
-            selectedCoins = EnterQtyCoins(usersCoins, changeCount);
-            coinsInMachine = AddCoins(selectedCoins, coinsInMachine);
-            return coinsInMachine;
         }
 
-        private static List<Coin> AddCoins(List<Coin> selectedCoins, List<Coin> coinsInMachine)
+        public static void DrinkPurchaseScreen()
         {
-            foreach(Coin coin in selectedCoins)
-            {
-                coinsInMachine.Add(coin);
-            }
-            return coinsInMachine;
+            Console.WriteLine("Please enter the type of drink you'd like to purchase");
+            Console.WriteLine("1. Cola\n2.Orange Soda\n3. Rootbeer");
         }
 
-        private static List<Coin> EnterQtyCoins(List<Coin> usersCoins, List<int> coinsAvailable)
+        public static int CanDesiredPrompt()
+        {
+            int selectionNumber = IntValidEntry(3);
+            return selectionNumber;
+        }
+        public static int[] CoinQtyPrompt(List<int> coinsAvailable)
         {
             List<Coin> desiredCoins = new List<Coin>();
             int[] numberOfEachToInsert = { 0, 0, 0, 0 };
@@ -72,30 +69,7 @@ namespace SodaMachine
                 } while (!parseSuccess || numberOfEachToInsert[i] < 0 || numberOfEachToInsert[i] > coinsAvailable[i]);
             }
 
-            for(int i = 0; i < numberOfEachToInsert[0]; i++)
-            {
-                
-                Coin coinFromWallet = usersCoins.Find(x => x.name == "quarter");
-                desiredCoins.Add(coinFromWallet);
-                usersCoins.Remove(coinFromWallet);
-            }
-            for (int i = 0; i < numberOfEachToInsert[1]; i++)
-            {
-                desiredCoins.Add(new Dime());
-                usersCoins.Remove(usersCoins.Find(x => x.name == "dime"));
-            }
-            for (int i = 0; i < numberOfEachToInsert[2]; i++)
-            {
-                desiredCoins.Add(new Nickel());
-                usersCoins.Remove(usersCoins.Find(x => x.name == "nickel"));
-            }
-            for (int i = 0; i < numberOfEachToInsert[3]; i++)
-            {
-                desiredCoins.Add(new Penny());
-                usersCoins.Remove(usersCoins.Find(x => x.name == "penny"));
-            }
-
-            return desiredCoins;
+            return numberOfEachToInsert;
         }
 
         public static void MakeChangeMessage(List<Coin> returnChange)
@@ -108,68 +82,7 @@ namespace SodaMachine
 
         public static void MakeChangeMessage(List<Coin> returnChange, double changeValue)
         {
-
-        }
-
-        private static List<int> DisplayCoins(List<Coin> coins)
-        {
-            int quarterCount = 0;
-            int dimeCount = 0;
-            int nickelCount = 0;
-            int pennyCount = 0;
-            List<int> changeCount = new List<int> { quarterCount, dimeCount, nickelCount, pennyCount };
-            foreach (Coin coin in coins)
-            {
-                if (coin.name == "quarter")
-                {
-                   changeCount[0]++;
-                }
-                if (coin.name == "dime")
-                {
-                    changeCount[1]++;
-                }
-                if (coin.name == "nickel")
-                {
-                    changeCount[2]++;
-                }
-                if (coin.name == "penny")
-                {
-                    changeCount[3]++;
-                }
-
-            }
-            Console.WriteLine("You have the following coins in your wallet:");
-            Console.WriteLine($"{changeCount[0]} quarters, {changeCount[1]} dimes, {changeCount[2]} nickels, and {changeCount[3]} pennies");
-            return changeCount;
-        }
-
-        public static Can DrinkPurchaseScreen(Customer customer, SodaMachine sodaMachine)
-        {
-            Can desiredDrink = new Cola(0.35);
-
-            return desiredDrink;
-        }
-
-        private static Can PickSoda()
-        {
-            Can sodaDesired;
-            int selection = IntValidEntry(3);
-            switch (selection)
-            {
-                case 1:
-                    sodaDesired = new Cola(0.35);
-                    break;
-                case 2:
-                    sodaDesired = new OrangeSoda(0.06);
-                    break;
-                case 3:
-                    sodaDesired = new RootBeer(0.60);
-                    break;
-                default:
-                    sodaDesired = new Cola(0.35);
-                    break;
-            }
-            return sodaDesired;
+            Console.WriteLine($"You recieved ${changeValue} in change");
         }
 
         private static int IntValidEntry(int options)
@@ -181,7 +94,7 @@ namespace SodaMachine
                 isUserEntryInt = int.TryParse(Console.ReadLine(), out numSelect);
                 if (!isUserEntryInt || (numSelect < 1 || numSelect > options))
                 {
-                    Console.WriteLine("Invalid entry, enter a number 1 through 3");
+                    Console.WriteLine($"Invalid entry, enter a number 1 through {options}");
                 }
             } while (numSelect < 1 || numSelect > options);
 

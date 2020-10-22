@@ -45,6 +45,8 @@ namespace SodaMachine
             }
         }
 
+
+
         public List<Coin> UseMachine(List<Coin> moneyIn, Can desiredSoda, Backpack userBackpack)
         {
 
@@ -241,10 +243,7 @@ namespace SodaMachine
                 //change returned is acceptable
                 //remove each targetchange from 
                 returnChange = targetChange;
-                do
-                {
 
-                } while (targetChange.Count > 0);
                 UserInterface.MakeChangeMessage(returnChange, targetChangeValue);
                 return true;
             }

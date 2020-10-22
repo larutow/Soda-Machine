@@ -9,7 +9,7 @@ namespace SodaMachine
     class RootBeer : Can
     {
         public RootBeer(double value)
-            : base("Sprecher", value)
+            : base("rootbeer", value)
         {
 
         }

@@ -39,10 +39,12 @@ namespace SodaMachine
                 switch (UserInterface.UserMenu())
                 {
                     case 1:
-                        coinsEntered = UserInterface.CoinSelectScreen(customer.wallet.coins, coinsEntered);
+                        UserInterface.CoinSelectScreen();
+                        coinsEntered.AddRange(customer.SelectCoins());
                         break;
                     case 2:
-                        Can desiredItem = UserInterface.DrinkPurchaseScreen(customer, sodaMachine);
+                        UserInterface.DrinkPurchaseScreen();
+                        Can desiredItem = customer.SelectCan();
                         changeReturn = sodaMachine.UseMachine(coinsEntered, desiredItem, customer.backpack);
                         break;
                     case 3:
