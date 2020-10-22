@@ -74,8 +74,10 @@ namespace SodaMachine
 
             for(int i = 0; i < numberOfEachToInsert[0]; i++)
             {
-                desiredCoins.Add(new Quarter());
-                usersCoins.Remove(usersCoins.Find(x => x.name == "quarter"));
+                
+                Coin coinFromWallet = usersCoins.Find(x => x.name == "quarter");
+                desiredCoins.Add(coinFromWallet);
+                usersCoins.Remove(coinFromWallet);
             }
             for (int i = 0; i < numberOfEachToInsert[1]; i++)
             {
