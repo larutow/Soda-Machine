@@ -98,6 +98,19 @@ namespace SodaMachine
             return desiredCoins;
         }
 
+        public static void MakeChangeMessage(List<Coin> returnChange)
+        {
+            if(returnChange.Count == 0)
+            {
+                Console.WriteLine("No change able to be given");
+            }
+        }
+
+        public static void MakeChangeMessage(List<Coin> returnChange, double changeValue)
+        {
+
+        }
+
         private static List<int> DisplayCoins(List<Coin> coins)
         {
             int quarterCount = 0;

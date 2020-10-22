@@ -245,7 +245,7 @@ namespace SodaMachine
                 {
 
                 } while (targetChange.Count > 0);
-                UserInterface.MakeChangeMessage(returnChange);
+                UserInterface.MakeChangeMessage(returnChange, targetChangeValue);
                 return true;
             }
             else
