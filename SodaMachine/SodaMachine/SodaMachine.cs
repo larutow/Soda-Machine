@@ -135,13 +135,19 @@ namespace SodaMachine
                     //not enough change, give money back
                     return moneyIn;
                 }
-                else{
-                    ChangeAlgo(calculatedChangeValue, out List<Coin> tryReturnChange);
-                    userBackpack.cans.Add(desiredSoda);
-                    inventory.Remove(desiredSoda);
-                    return tryReturnChange;
+                else
+                {
+                    if (ChangeAlgo(calculatedChangeValue, out List<Coin> tryReturnChange))
+                    {
+                        userBackpack.cans.Add(desiredSoda);
+                        inventory.Remove(desiredSoda);
+                        return tryReturnChange;
+                    }
+                    else
+                    {
+                        return moneyIn;
+                    }
                 }
-
             }
 
             return returnChange;
@@ -220,7 +226,7 @@ namespace SodaMachine
             double idealTargetChangeSum = 0;
             returnChange = new List<Coin>();
 
-
+            int timeout = 0;
             bool[] hasCoins = RegisterHasCoins();
 
             //Use USD greedy method (first quarters, then dimes etc.) to build ideal change list 
@@ -258,7 +264,9 @@ namespace SodaMachine
                     hasCoins = RegisterHasCoins();
                 }
 
-            } while (idealTargetChangeSum < targetChangeValue);
+                timeout ++;
+
+            } while (idealTargetChangeSum < targetChangeValue || timeout < 1000);
             // above generates "targetChange" as a set of coins needed to return change
             // if reigster contains all target change set = set bool = true, target change = return change
             // else, n/a
@@ -268,12 +276,15 @@ namespace SodaMachine
                 //change returned is acceptable
                 //remove each targetchange from 
                 returnChange = targetChange;
-
                 UserInterface.MakeChangeMessage(returnChange, targetChangeValue);
                 return true;
             }
             else
             {
+                foreach(Coin coin in targetChange)
+                {
+                    register.Add(coin);
+                }
                 returnChange = new List<Coin>();
                 UserInterface.MakeChangeMessage(returnChange);
                 return false;
