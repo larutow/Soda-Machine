@@ -109,6 +109,16 @@ namespace SodaMachine
             return desiredCan;
         }
 
+        public void ReturnCoins(List<Coin> coinsIn)
+        {
+            wallet.coins.AddRange(coinsIn);
+        }
+
+        public void CheckBackpack()
+        {
+            UserInterface.BackPackDisplay(backpack);
+        }
+
         private string PickSoda(int selection)
         {
             string sodaDesired;

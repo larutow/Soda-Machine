@@ -49,9 +49,16 @@ namespace SodaMachine
                         coinsEntered = changeReturn;
                         break;
                     case 3:
-                        customer.CheckWallet();
+                        customer.ReturnCoins(coinsEntered);
+                        coinsEntered = new List<Coin>();
                         break;
                     case 4:
+                        customer.CheckWallet();
+                        break;
+                    case 5:
+                        customer.CheckBackpack();
+                        break;
+                    case 6:
                         stayatmachine = false;
                         break;
                 }

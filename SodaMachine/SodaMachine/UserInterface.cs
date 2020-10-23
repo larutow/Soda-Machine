@@ -22,9 +22,11 @@ namespace SodaMachine
             Console.WriteLine("\nUser Options:");
             Console.WriteLine("1. Insert coins");
             Console.WriteLine("2. Choose a soda option");
-            Console.WriteLine("3. Show coins in wallet");
-            Console.WriteLine("4. Quit");
-            return IntValidEntry(4);
+            Console.WriteLine("3. Return coins in machine to wallet");
+            Console.WriteLine("4. Show coins in wallet");
+            Console.WriteLine("5. Show cans in backpack");
+            Console.WriteLine("6. Quit");
+            return IntValidEntry(6);
         }
 
         public static void CoinSelectScreen()
@@ -79,9 +81,35 @@ namespace SodaMachine
             }
         }
 
-        public static void MakeChangeMessage(List<Coin> returnChange, double changeValue)
+        public static void MakeChangeMessage(List<Coin> returnChange, bool success)
         {
-            Console.WriteLine($"You recieved ${changeValue} in change");
+            if(success == true)
+            {
+                Console.WriteLine($"You recieved change");
+            }
+            else
+            {
+                Console.WriteLine("Unable to make change");
+            }
+            
+        }
+
+        public static void CanDelivered(Can can)
+        {
+            Console.WriteLine($"{can.name} dispensed");
+            Console.WriteLine("enter any key to continue");
+            Console.ReadLine();
+        }
+
+        public static void BackPackDisplay(Backpack backpack)
+        {
+            Console.WriteLine("Backpack contains:");
+            foreach (Can can in backpack.cans)
+            {
+                Console.WriteLine($"{can.name}");
+            }
+            Console.WriteLine("enter any key to continue");
+            Console.ReadLine();
         }
 
         public static void NoInventoryAlert()

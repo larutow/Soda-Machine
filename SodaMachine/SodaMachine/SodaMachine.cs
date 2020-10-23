@@ -120,6 +120,7 @@ namespace SodaMachine
                 //remove soda from inventory
                 userBackpack.cans.Add(desiredSoda);
                 inventory.Remove(desiredSoda);
+                UserInterface.CanDelivered(desiredSoda);
                 return returnChange;
             }
             else
@@ -141,10 +142,12 @@ namespace SodaMachine
                     {
                         userBackpack.cans.Add(desiredSoda);
                         inventory.Remove(desiredSoda);
+                        UserInterface.CanDelivered(desiredSoda);
                         return tryReturnChange;
                     }
                     else
                     {
+                        //unable to make change 
                         return moneyIn;
                     }
                 }
@@ -276,7 +279,7 @@ namespace SodaMachine
                 //change returned is acceptable
                 //remove each targetchange from 
                 returnChange = targetChange;
-                UserInterface.MakeChangeMessage(returnChange, targetChangeValue);
+                UserInterface.MakeChangeMessage(returnChange, true);
                 return true;
             }
             else
@@ -286,36 +289,9 @@ namespace SodaMachine
                     register.Add(coin);
                 }
                 returnChange = new List<Coin>();
-                UserInterface.MakeChangeMessage(returnChange);
+                UserInterface.MakeChangeMessage(returnChange, false);
                 return false;
             }
-
-
-            //int count = targetChange.Count;
-            
-            
-
-            //if (targetChange.Count == returnChange.Count) //if all coins are found to satisfy ideal coin case
-            //{
-            //    makeChange = true;
-            //}
-
-            //if (makeChange)
-            //{
-            //    Console.WriteLine("return change successfully obtained from register");
-            //}
-            //else//if change couldn't be made
-            //{
-            //    foreach (Coin coin in returnChange)
-            //    {
-            //        register.Add(coin);//return coins from change return to register
-            //    }
-            //    returnChange.Clear();//clear change return
-            //}
-
-            //return makeChange;
-
-
         }
     }
 }
