@@ -37,7 +37,7 @@ namespace SodaMachine
 
         private void PopulateInventory()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 15; i++)
             {
                 inventory.Add(new Cola(0.35));
                 inventory.Add(new OrangeSoda(0.06));
@@ -47,7 +47,32 @@ namespace SodaMachine
 
 
 
-        public List<Coin> UseMachine(List<Coin> moneyIn, Can desiredSoda, Backpack userBackpack)
+        private bool IsDesiredSodaAvailable(string desiredSodaName)
+        {
+            foreach (Can can in inventory)
+            {
+                if (can.name == desiredSodaName)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private Can SetDesiredSoda(string desiredSodaName)
+        {
+            Can desiredCan = new Cola(0);
+            foreach (Can can in inventory)
+            {
+                if (can.name == desiredSodaName)
+                {
+                    desiredCan = can;
+                }
+            }
+            return desiredCan;
+        }
+
+        public List<Coin> UseMachine(List<Coin> moneyIn, string desiredSodaName, Backpack userBackpack)
         {
 
             /*
@@ -62,9 +87,8 @@ namespace SodaMachine
             double sumInputValue = 0;
             double calculatedChangeValue;
             List<Coin> returnChange = new List<Coin>();
+            Can desiredSoda;
 
-            //sum money input
-            //sumInputValue = CalcSum(moneyIn); // add to register?
             foreach (Coin coin in moneyIn)
             {
                 sumInputValue += coin.Value;
@@ -72,15 +96,21 @@ namespace SodaMachine
             }
             sumInputValue = Math.Round(sumInputValue, 2);
 
-            
-            //display to UI
+
+            if(IsDesiredSodaAvailable(desiredSodaName)){
+                desiredSoda = SetDesiredSoda(desiredSodaName);
+            }
+            else
+            {
+                UserInterface.NoInventoryAlert();
+                return moneyIn;
+            }
 
             //If not enough money is passed in, don’t complete transaction and give the money back
             if (sumInputValue < desiredSoda.Value)
             {
-                // return change, don't complete tx
-                returnChange = moneyIn;
-
+                UserInterface.NotEnoughMoneyAlert();
+                return moneyIn;
             }
 
             // * If exact change is passed in, accept payment and dispense a soda instance that gets saved in my Backpack.
@@ -90,13 +120,13 @@ namespace SodaMachine
                 //remove soda from inventory
                 userBackpack.cans.Add(desiredSoda);
                 inventory.Remove(desiredSoda);
+                return returnChange;
             }
             else
             //*If too much money is passed in, accept the payment, return change as a list of coins from internal, limited register, and dispense a soda instance that gets saved to my Backpack.
             if (sumInputValue > desiredSoda.Value && InventoryCheck(desiredSoda))
             {
-                //check internal register
-                //sum money in register
+
                 double registerChangeValue = Math.Round(CalcSum(register), 2);
                 calculatedChangeValue = Math.Round((sumInputValue - desiredSoda.Value), 2);
 
@@ -105,8 +135,10 @@ namespace SodaMachine
                     //not enough change, give money back
                     return moneyIn;
                 }
-                if (ChangeAlgo(calculatedChangeValue, out List<Coin> tryReturnChange))
-                {
+                else{
+                    ChangeAlgo(calculatedChangeValue, out List<Coin> tryReturnChange);
+                    userBackpack.cans.Add(desiredSoda);
+                    inventory.Remove(desiredSoda);
                     return tryReturnChange;
                 }
 
@@ -140,13 +172,9 @@ namespace SodaMachine
             return inStock;
         }
 
-        private bool[] RegisterHasCoins(bool[] hasCoins)
+        private bool[] RegisterHasCoins()
         {
-            
-            for(int i = 0; i < hasCoins.Length; i++)
-            {
-                hasCoins[i] = false;
-            }
+            bool[] hasCoins = { false, false, false, false };
 
             foreach(Coin coin in register)
             {
@@ -188,15 +216,12 @@ namespace SodaMachine
 
         private bool ChangeAlgo(double targetChangeValue, out List<Coin> returnChange)
         {
-
-            bool makeChange = false;
             List<Coin> targetChange = new List<Coin>();
             double idealTargetChangeSum = 0;
             returnChange = new List<Coin>();
-            double returnChangeValue = 0;
-            bool[] hasCoins = { false, false, false, false };
 
-            hasCoins = RegisterHasCoins(hasCoins);
+
+            bool[] hasCoins = RegisterHasCoins();
 
             //Use USD greedy method (first quarters, then dimes etc.) to build ideal change list 
             do
@@ -206,7 +231,7 @@ namespace SodaMachine
                     targetChange.Add(new Quarter());
                     idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.25, 2);
                     RegisterRemoveCoin("quarter");
-                    hasCoins = RegisterHasCoins(hasCoins);
+                    hasCoins = RegisterHasCoins();
                 }
                 else
                 if (Math.Round((targetChangeValue - idealTargetChangeSum),2) >= 0.1 && hasCoins[1])
@@ -214,7 +239,7 @@ namespace SodaMachine
                     targetChange.Add(new Dime());
                     idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.1, 2 );
                     RegisterRemoveCoin("dime");
-                    hasCoins = RegisterHasCoins(hasCoins);
+                    hasCoins = RegisterHasCoins();
                 }
                 else
                 if (Math.Round((targetChangeValue - idealTargetChangeSum),2) >= 0.05 && hasCoins[2])
@@ -222,7 +247,7 @@ namespace SodaMachine
                     targetChange.Add(new Nickel());
                     idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.05, 2);
                     RegisterRemoveCoin("nickel");
-                    hasCoins = RegisterHasCoins(hasCoins);
+                    hasCoins = RegisterHasCoins();
                 }
                 else
                 if (Math.Round((targetChangeValue - idealTargetChangeSum),2) >= 0.01 && hasCoins[3])
@@ -230,7 +255,7 @@ namespace SodaMachine
                     targetChange.Add(new Penny());
                     idealTargetChangeSum = Math.Round(idealTargetChangeSum += 0.01, 2);
                     RegisterRemoveCoin("penny");
-                    hasCoins = RegisterHasCoins(hasCoins);
+                    hasCoins = RegisterHasCoins();
                 }
 
             } while (idealTargetChangeSum < targetChangeValue);
@@ -280,13 +305,6 @@ namespace SodaMachine
             //return makeChange;
 
 
-        }
-
-        private Can distributeCan()
-        {
-            int x = 0;
-
-            return inventory[x];
         }
     }
 }

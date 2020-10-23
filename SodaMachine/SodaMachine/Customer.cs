@@ -95,30 +95,36 @@ namespace SodaMachine
             return changeCount;
         }
 
-        public Can SelectCan()
+        public void CheckWallet()
         {
-            Can desiredCan;
+            List<int> coinsInWallet = CountCoins(wallet.coins);
+            UserInterface.CoinDisplay(coinsInWallet);
+        }
+
+        public string SelectCan()
+        {
+            string desiredCan;
             int selectionNumber = UserInterface.CanDesiredPrompt();
             desiredCan = PickSoda(selectionNumber);
             return desiredCan;
         }
 
-        private static Can PickSoda(int selection)
+        private string PickSoda(int selection)
         {
-            Can sodaDesired;
+            string sodaDesired;
             switch (selection)
             {
                 case 1:
-                    sodaDesired = new Cola();
+                    sodaDesired = "cola";
                     break;
                 case 2:
-                    sodaDesired = new OrangeSoda();
+                    sodaDesired = "orangesoda";
                     break;
                 case 3:
-                    sodaDesired = new RootBeer();
+                    sodaDesired = "rootbeer";
                     break;
                 default:
-                    sodaDesired = new Cola();
+                    sodaDesired = "cola";
                     break;
             }
             return sodaDesired;

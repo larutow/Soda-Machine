@@ -10,13 +10,11 @@ namespace SodaMachine
     static class UserInterface
     {
 
-
         public static void VendingDisplay(SodaMachine sodaMachine, List<Coin> coinsEntered)
         {
             Console.WriteLine("Vending machine has the following options:");
             Console.WriteLine($"Cola - Orange Soda - Rootbeer");
             Console.WriteLine($"\nMoney entered to machine: {Math.Round(sodaMachine.CalcSum(coinsEntered),2)}");
-
         }
 
         public static int UserMenu()
@@ -24,8 +22,9 @@ namespace SodaMachine
             Console.WriteLine("\nUser Options:");
             Console.WriteLine("1. Insert coins");
             Console.WriteLine("2. Choose a soda option");
-            Console.WriteLine("3. Quit");
-            return IntValidEntry(3);
+            Console.WriteLine("3. Show coins in wallet");
+            Console.WriteLine("4. Quit");
+            return IntValidEntry(4);
         }
 
         public static void CoinSelectScreen()
@@ -36,7 +35,7 @@ namespace SodaMachine
         public static void DrinkPurchaseScreen()
         {
             Console.WriteLine("Please enter the type of drink you'd like to purchase");
-            Console.WriteLine("1. Cola\n2.Orange Soda\n3. Rootbeer");
+            Console.WriteLine("1. Cola\n2. Orange Soda\n3. Rootbeer");
         }
 
         public static int CanDesiredPrompt()
@@ -85,6 +84,18 @@ namespace SodaMachine
             Console.WriteLine($"You recieved ${changeValue} in change");
         }
 
+        public static void NoInventoryAlert()
+        {
+            Console.WriteLine("Inventory out of that selection - enter to return home");
+            Console.ReadLine();
+        }
+
+        public static void NotEnoughMoneyAlert()
+        {
+            Console.WriteLine("You need to enter more money - enter to return home");
+            Console.ReadLine();
+        }
+
         private static int IntValidEntry(int options)
         {
             int numSelect = 0;
@@ -101,6 +112,11 @@ namespace SodaMachine
             return numSelect;
         }
 
+        public static void CoinDisplay(List<int> coins)
+        {
+            Console.WriteLine($"You have {coins[0]} quarters, {coins[1]} dimes, {coins[2]} nickels, and {coins[3]} pennies - enter any key to continue");
+            Console.ReadLine();
+        }
 
     }
 }

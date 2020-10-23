@@ -44,11 +44,12 @@ namespace SodaMachine
                         break;
                     case 2:
                         UserInterface.DrinkPurchaseScreen();
-                        Can desiredItem = customer.SelectCan();
+                        string desiredItem = customer.SelectCan();
                         changeReturn = sodaMachine.UseMachine(coinsEntered, desiredItem, customer.backpack);
+                        coinsEntered = changeReturn;
                         break;
                     case 3:
-
+                        customer.CheckWallet();
                         break;
                     case 4:
                         stayatmachine = false;
