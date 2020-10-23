@@ -37,7 +37,7 @@ namespace SodaMachine
         public static void DrinkPurchaseScreen()
         {
             Console.WriteLine("Please enter the type of drink you'd like to purchase");
-            Console.WriteLine("1. Cola\n2. Orange Soda\n3. Rootbeer");
+            Console.WriteLine("1. Cola ($0.35)\n2. Orange Soda ($0.06)\n3. Rootbeer ($0.60)");
         }
 
         public static int CanDesiredPrompt()
